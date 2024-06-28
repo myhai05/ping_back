@@ -44,15 +44,21 @@ const userSchema = new mongoose.Schema(//on crée une bibliothéque mongoose dan
       required: true,
     },
     emailToken: {
-        type: String,
-      },
+      type: String,
+    },
     emailTokenExpires: {
-        type: Date,
-      },
+      type: Date,
+    },
     isVerified: {
-        type: Boolean,
-        default: false,
-      },
+      type: Boolean,
+      default: false,
+    },
+    resetPasswordToken: {
+      type: String,
+    },
+    resetPasswordExpires: {
+      type: Date,
+    },
   }, { timestamps: true },
 );
 
@@ -70,7 +76,7 @@ userSchema.pre("save", async function (next) {
 
 userSchema.statics.login = async function (email, password) {
   const user = await this.findOne({ email });
-     console.log(user.isVerified);
+  console.log(user.isVerified);
   if (user) {
     // Vérifier si l'email est vérifié
     if (!user.isVerified) {

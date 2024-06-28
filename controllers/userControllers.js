@@ -69,7 +69,7 @@ module.exports.signIn = async (req, res) => {
 module.exports.logout = (req, res) => {
   res.cookie('jwt', '', { maxAge: 1 });
   console.log(req);
- // res.redirect('/login');
+  res.redirect('/login');
 }
 
 
@@ -140,3 +140,4 @@ module.exports.userInfo = (req, res) => {
       res.status(500).send("Internal server error");
     });
 };
+
