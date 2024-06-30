@@ -13,7 +13,7 @@ const app = express();
 
 
 const corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: 'http://cours.pingpro.fr',
     credentials: true,
     'allowedHeaders': ['sessionId', 'Content-Type'],
     'exposedHeaders': ['sessionId'],
