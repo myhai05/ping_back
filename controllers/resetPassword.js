@@ -1,31 +1,25 @@
-const UserModel = require('../models/user.model');
-const crypto = require('crypto');
-const sendEmail = require('../utils/sendResetEmail');
-
-exports.requestResetPassword = async (req, res) => {
-  const { email } = req.body;
-           
-  try {
-    const user = await UserModel.findOne({ email });
-      
-    if (!user) {
-      return res.status(400).json({ message: 'Email not found' });
+exports.resetPassword = async (req, res) => {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+  
+    try {
+      const user = await UserModel.findOne({
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: Date.now() } // Ensure token has not expired
+      });
+  
+      if (!user) {
+        return res.status(400).json({ message: 'Invalid or expired token' });
+      }
+  
+      user.password = newPassword; // Ensure you hash the password before saving
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+      await user.save();
+  
+      res.status(200).json({ message: 'Password reset successful' });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server error' });
     }
-
-    const resetToken = crypto.randomBytes(32).toString('hex');
-    const resetTokenExpires = Date.now() + 3600000; // 1 heure
-
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = resetTokenExpires;
-    await user.save();
-
-    const resetURL = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`;
-    const emailText = `Click here to reset your password: ${resetURL}`;
-    await sendEmail(user.email, 'Password Reset Request', emailText);
-
-    res.status(200).json({ message: 'Password reset link sent' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
+  };
