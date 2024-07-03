@@ -16,13 +16,13 @@ app.use(cookieParser());
 
 
 const corsOptions = {
-  origin: 'http://cours.pingpro.fr',
-    credentials: true,
-    'allowedHeaders': ['Authorization', 'Content-Type','sessionId', 'Content-Type'],
-    'exposedHeaders': ['sessionId'],
-    'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    'preflightContinue': false
-  }
+  origin: 'http://cours.pingpro.fr', // Remplacez par votre domaine front-end
+  credentials: true, // Permet l'envoi des cookies à travers les domaines
+  allowedHeaders: ['Authorization', 'Content-Type', 'sessionId'], // Headers autorisés
+  exposedHeaders: ['sessionId'], // Headers exposés
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Méthodes HTTP autorisées
+  preflightContinue: false,
+};
 
 app.use(cors(corsOptions));
 
