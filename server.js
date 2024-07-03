@@ -16,7 +16,7 @@ app.use(cookieParser());
 
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: 'http://cours.pingpro.fr',
     credentials: true,
     'allowedHeaders': ['Authorization', 'Content-Type','sessionId', 'Content-Type'],
     'exposedHeaders': ['sessionId'],
