@@ -59,6 +59,11 @@ const userSchema = new mongoose.Schema(//on crée une bibliothéque mongoose dan
     resetPasswordExpires: {
       type: Date,
     },
+    role: {
+      type: String,
+      enum: ['admin', 'user'],
+      default: 'user',
+    },
   }, { timestamps: true },
 );
 

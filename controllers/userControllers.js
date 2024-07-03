@@ -45,7 +45,7 @@ module.exports.signIn = async (req, res) => {
 
     console.log(token);
 
-    res.cookie('jwt', token, { httpOnly: true, maxAge });
+    res.cookie('jwt', token, { httpOnly: true, secure: true, maxAge });
     const responseData = {
       userId: user._id,
       //email: user.email,

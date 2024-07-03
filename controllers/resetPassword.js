@@ -1,3 +1,5 @@
+const UserModel = require('../models/user.model');
+
 exports.resetPassword = async (req, res) => {
     const { token } = req.params;
     const { newPassword } = req.body;

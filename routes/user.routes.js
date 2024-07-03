@@ -4,6 +4,9 @@ const userController = require('../controllers/userControllers');
 const userValidation = require('../controllers/userValidation');
 const requestPassword = require('../controllers/requestNewPassword');
 const resetPassword = require('../controllers/resetPassword');
+const offerController = require('../controllers/offerControllers');
+const { isAdmin } = require('../middlewares/authAdmin');
+const auth = require('../middlewares/authAdmin');
 
 
 
@@ -17,5 +20,11 @@ router.get("/", userController.getAllUsers);
 router.delete("/:id", userController.userDelete);
 router.put("/:id", userController.userUpdate);
 router.get("/:id", userController.userInfo);
+
+router.post('/add-offer', auth.checkUser, offerController.addOffer);
+router.post('/offers', offerController.getOffers);
+/*router.put('/:id', updateOffer);
+router.delete('/:id', deleteOffer);*/
+
 
 module.exports = router;

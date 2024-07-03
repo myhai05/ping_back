@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const router = require('./routes/user.routes');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 dotenv.config();
 
@@ -11,17 +12,21 @@ connectDB();
 
 const app = express();
 
+app.use(cookieParser());
+
 
 const corsOptions = {
-  origin: ['http://cours.pingpro.fr', 'http://localhost:3000'],
+  origin: 'http://localhost:3000',
     credentials: true,
-    'allowedHeaders': ['sessionId', 'Content-Type'],
+    'allowedHeaders': ['Authorization', 'Content-Type','sessionId', 'Content-Type'],
     'exposedHeaders': ['sessionId'],
     'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
     'preflightContinue': false
   }
 
 app.use(cors(corsOptions));
+
+
 
 app.use(bodyParser.json());//dispacher les body requettes
 
@@ -30,6 +35,7 @@ app.get('/', (req, res) => {
   });
 
 app.use('/api', router);
+
 
 // server
 app.listen(process.env.PORT, () => {
