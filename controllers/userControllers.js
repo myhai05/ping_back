@@ -7,7 +7,7 @@ const ObjectID = require('mongoose').Types.ObjectId;
 
 
 
-const maxAge = 5 * 60 * 1000;
+const maxAge = 60 * 60 * 1000;
 const jwtSecret = process.env.JWT_SECRET;
 
 const createToken = (id) => {

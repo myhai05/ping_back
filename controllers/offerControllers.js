@@ -16,7 +16,7 @@ module.exports.addOffer = async (req, res) => {
 // Get all offers
 module.exports.getOffers = async (req, res) => {
    try {
-        const offers = await OfferModel.find();
+        const offers = await OfferModel.find().select('title description price');
         res.status(200).json(offers);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching offers' });
