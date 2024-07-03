@@ -21,7 +21,8 @@ exports.requestResetPassword = async (req, res) => {
     user.resetPasswordExpires = resetTokenExpires;
     await user.save();
 
-    const resetURL = `${req.protocol}://${FRONT_URL}/reset-form/${resetToken}`;
+    const resetURL = `${req.protocol}://${process.env.FRONT_URL}/reset-form/${resetToken}`;
+    console.log(resetURL);
     const emailText = `Click here to reset your password: ${resetURL}`;
     await sendEmail(user.email, 'Password Reset Request', emailText);
 
