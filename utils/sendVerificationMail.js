@@ -18,7 +18,7 @@ const sendValidationEmail = async (user, req, res) => {
         await user.save();
 
         // Construire l'URL de vérification
-        const url = `http://localhost:${process.env.PORT}/api/verify-email?token=${token}`;
+        const url = `http://${process.env.REACT_APP_API_URL}/api/verify-email?token=${token}`;
 
         const mailOptions = {
             from: process.env.EMAIL_USER,
