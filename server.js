@@ -19,7 +19,7 @@ app.use(cookieParser());
 
 
 const corsOptions = {
-  origin: 'http://localhost:3000', // Remplacez par votre domaine front-end
+  origin: process.env.FRONEND_CORS_URL, // Remplacez par votre domaine front-end
   credentials: true, // Permet l'envoi des cookies à travers les domaines
   allowedHeaders: ['sessionId','Origin, X-Requested-With, Content-Type, Accept, Authorization'], // Headers autorisés
   exposedHeaders: ['sessionId'], // Headers exposés
