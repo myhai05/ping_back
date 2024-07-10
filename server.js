@@ -17,9 +17,9 @@ app.use(cookieParser());
 
 
 const corsOptions = {
-  origin: 'http://api.pingpro.fr/', // Remplacez par votre domaine front-end
+  origin: 'http://cours.pingpro.fr', // Remplacez par votre domaine front-end
   credentials: true, // Permet l'envoi des cookies à travers les domaines
-  allowedHeaders: ['sessionId','Origin, X-Requested-With, Content-Type, Accept, Authorization'], // Headers autorisés
+  allowedHeaders: ['sessionId','Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'], // Headers autorisés
   exposedHeaders: ['sessionId'], // Headers exposés
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Méthodes HTTP autorisées
   preflightContinue: false,
