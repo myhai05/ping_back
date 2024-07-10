@@ -5,6 +5,7 @@ const cors = require('cors');
 const router = require('./routes/user.routes');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 dotenv.config();
 
@@ -16,9 +17,9 @@ app.use(cookieParser());
 
 
 const corsOptions = {
-  origin: 'http://cours.pingpro.fr', // Remplacez par votre domaine front-end
+  origin: 'http://api.pingpro.fr/', // Remplacez par votre domaine front-end
   credentials: true, // Permet l'envoi des cookies à travers les domaines
-  allowedHeaders: ['Authorization', 'Content-Type', 'sessionId'], // Headers autorisés
+  allowedHeaders: ['sessionId','Origin, X-Requested-With, Content-Type, Accept, Authorization'], // Headers autorisés
   exposedHeaders: ['sessionId'], // Headers exposés
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Méthodes HTTP autorisées
   preflightContinue: false,
@@ -26,7 +27,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(bodyParser.json());//dispacher les body requettes
 

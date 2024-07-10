@@ -48,6 +48,7 @@ module.exports.signIn = async (req, res) => {
     res.cookie('jwt', token, { httpOnly: true, maxAge });
     const responseData = {
       userId: user._id,
+      role: user.role,
       //email: user.email,
       //picture: user.picture,
       firstName: user.firstName,

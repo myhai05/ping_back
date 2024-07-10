@@ -6,6 +6,8 @@ const requestPassword = require('../controllers/requestNewPassword');
 const resetPassword = require('../controllers/resetPassword');
 const offerController = require('../controllers/offerControllers');
 const auth = require('../middlewares/authAdmin');
+const videoController = require('../controllers/videoControllers');
+const upload = require('../middlewares/upload');
 
 
 
@@ -25,6 +27,15 @@ router.get('/offers/get-offers', offerController.getOffers);
 
 /*router.put('/:id', updateOffer);
 router.delete('/:id', deleteOffer);*/
+
+router.post('/post/add-post', upload.single('video'), videoController.createVideo);
+router.get('/post/get-posts', videoController.getVideos);
+router.get('/post/get-video', videoController.getVideosByPostAndUser);
+router.put('/:id',  videoController.updateVideo);
+router.delete('/:id', videoController.deleteVideo);
+
+router.post('/post/save-chapters', videoController.saveChapters);
+router.get('/post/chapters/:videoId', videoController.getChapters);
 
 
 module.exports = router;
