@@ -17,7 +17,13 @@ const OfferSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  validityMonths: {
+    type: Number,
+    required: true,
+  }
 });
+
+
 
 const OfferModel = mongoose.model('offers', OfferSchema);
 

@@ -8,10 +8,11 @@ const ObjectID = require('mongoose').Types.ObjectId;
 
 
 const maxAge = 60 * 60 * 1000;
+const minAge = 1;
 const jwtSecret = process.env.JWT_SECRET;
 
-const createToken = (id) => {
-  return jwt.sign({ id }, jwtSecret, {
+const createToken = (id, role) => {
+  return jwt.sign({ id, role }, jwtSecret, {
     expiresIn: `${maxAge}s`
   })
 };
@@ -40,19 +41,19 @@ module.exports.signIn = async (req, res) => {
        
   try {
     const user = await UserModel.login(email, password);
-    console.log('user est'+user._id);
-    const token = createToken(user._id);//création d'un token avec l'id et la clé secrète
+    
+    const token = createToken(user._id,user.role);//création d'un token avec l'id et la clé secrète
 
-    console.log(token);
 
-    res.cookie('jwt', token, { httpOnly: true, maxAge });
+    res.cookie('jwt', token, { httpOnly: true, maxAge, secure: true, // use secure cookies in production
+      sameSite: 'None' });
     const responseData = {
       userId: user._id,
       role: user.role,
       //email: user.email,
       //picture: user.picture,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      //firstName: user.firstName,
+      //lastName: user.lastName,
      // contacts: user.contacts.map(contact => ({
       //  contactId: contact._id,
      //   contactName: contact.contactName,
@@ -68,9 +69,11 @@ module.exports.signIn = async (req, res) => {
 }
 
 module.exports.logout = (req, res) => {
-  res.cookie('jwt', '', { maxAge: 1 });
-  console.log(req);
+  
+  res.cookie('jwt', '', { minAge: 1, httpOnly: true });
+  //res.clearCookie('jwt');
   res.redirect('/login');
+
 }
 
 

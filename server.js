@@ -6,12 +6,21 @@ const router = require('./routes/user.routes');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const { checkUser, requireAuth } = require('./middlewares/authAdmin');
 
 dotenv.config();
 
 connectDB();
 
 const app = express();
+
+app.use(
+  bodyParser.json({
+      verify: function(req, res, buf) {
+          req.rawBody = buf;
+      }
+  })
+);
 
 app.use(bodyParser.json());//dispacher les body requettes
 
@@ -28,6 +37,15 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+// jwt
+//app.get('*', checkUser);
+app.get('/jwtid', requireAuth, (req, res) => {
+  console.log(req.user);
+  const responseData = { userId: req.user , role: req.role };
+
+  res.status(200).send({ responseData });
+});
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

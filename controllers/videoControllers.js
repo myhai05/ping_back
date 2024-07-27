@@ -51,7 +51,6 @@ exports.deleteVideo = async (req, res) => {
 
 exports.saveChapters = async (req, res) => {
   const { postId, chapters } = req.body;
-  console.log(req.body);
 
   try {
     // Parcourir les chapitres envoyés dans la requête

@@ -81,7 +81,7 @@ userSchema.pre("save", async function (next) {
 
 userSchema.statics.login = async function (email, password) {
   const user = await this.findOne({ email });
-  console.log(user.isVerified);
+  
   if (user) {
     // Vérifier si l'email est vérifié
     if (!user.isVerified) {
@@ -92,6 +92,7 @@ userSchema.statics.login = async function (email, password) {
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (passwordMatch) {
       return user; // Si le mot de passe correspond, retourne l'utilisateur
+      
     } else {
       throw new Error('Incorrect password'); // Sinon, lance une erreur
     }

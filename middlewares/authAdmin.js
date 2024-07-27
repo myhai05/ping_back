@@ -40,9 +40,24 @@ module.exports.checkUser = async (req, res, next) => {
 
 
 module.exports.requireAuth = (req, res, next) => {
-    const cookieHeader = req.headers.cookie;
-    const secretJwt = process.env.JWT_SECRET;
-   
+    const token = req.cookies.jwt;
+  if (token) {
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+     
+      if (err) {
+        console.log(err);
+        res.send(403).json({ message: 'Token invalid or expired' })
+      } else {
+       // console.log('Decoded Token ID:', decodedToken.id);
+        req.user = decodedToken.id;  // Add the decoded token to the request object
+        req.role = decodedToken.role;
+        next();
+      }
+    });
+  } else {
+    console.log('No token');
+  }
+  /* 
     if (cookieHeader) {
       const token = cookieHeader.split(';').find(cookie => cookie.trim().startsWith('jwt='));
             
@@ -66,5 +81,5 @@ module.exports.requireAuth = (req, res, next) => {
     } else {
       console.log("Aucun en-tête Cookie trouvé.");
       res.status(401).json('En-tête Cookie manquant');
-    }
+    }*/
   };

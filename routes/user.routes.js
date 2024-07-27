@@ -8,6 +8,8 @@ const offerController = require('../controllers/offerControllers');
 const auth = require('../middlewares/authAdmin');
 const videoController = require('../controllers/videoControllers');
 const upload = require('../middlewares/upload');
+const paymentController = require('../controllers/paymentControllers');
+const bodyParser = require('body-parser');
 
 
 
@@ -17,12 +19,12 @@ router.post('/request-reset-password', requestPassword.requestResetPassword);
 router.post('/reset-password/:token', resetPassword.resetPassword); // Updated route handler
 router.post('/login', userController.signIn);
 router.get('/logout', userController.logout);
-router.get("/", userController.getAllUsers);
+router.get("/get-users", userController.getAllUsers);
 router.delete("/:id", userController.userDelete);
 router.put("/:id", userController.userUpdate);
 router.get("/:id", userController.userInfo);
 
-router.post('/offers/add-offer', auth.checkUser, offerController.addOffer);
+router.post('/offers/add-offer', offerController.addOffer);
 router.get('/offers/get-offers', offerController.getOffers);
 
 /*router.put('/:id', updateOffer);
@@ -36,6 +38,13 @@ router.delete('/:id', videoController.deleteVideo);
 
 router.post('/post/save-chapters', videoController.saveChapters);
 router.get('/post/chapters/:videoId', videoController.getChapters);
+
+// Routes paiement
+router.post('/payment/create-checkout-session', paymentController.checkoutSession);
+router.post('/payment/create-payment-intent', paymentController.createPaymentIntent);
+router.post('/payment/webhook', express.raw({type: 'application/json'}), paymentController.handleWebhook);
+router.get('/payment/get-payments', paymentController.getAllPayments);
+
 
 
 module.exports = router;

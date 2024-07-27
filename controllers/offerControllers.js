@@ -2,10 +2,12 @@ const OfferModel = require('../models/offer.model');
 
 module.exports.addOffer = async (req, res) => {
     // Extract data from req.body
-    const { title, description, price } = req.body;
-    
+    console.log(req.body);
+    const { title, description, price, validityMonths } = req.body;
+           
     try {
-        const newOffer = new OfferModel({ title, description, price });
+        const newOffer = new OfferModel({ title, description, price, validityMonths });
+        console.log(newOffer);
         await newOffer.save();
         res.status(200).json(newOffer);
     } catch (error) {
