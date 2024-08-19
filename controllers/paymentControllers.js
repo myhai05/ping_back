@@ -1,6 +1,7 @@
 const { response } = require('express');
 const stripe = require('../config/stripe');
 const Payment = require('../models/payment.model');
+const UserModel = require('../models/user.model');
 require('dotenv').config();
 
 
@@ -63,7 +64,7 @@ exports.createPaymentIntent = async (req, res) => {
 
 // Webhook pour gérer les événements Stripe
 exports.handleWebhook = async (req, res) => {
-      console.log(req);
+    
   endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
   const sig = req.headers['stripe-signature'];
   let event;
@@ -89,9 +90,11 @@ exports.handleWebhook = async (req, res) => {
 
 const handleInvoicePaid = async (invoice) => {
 
+  const userId = invoice.metadata.userId; //'668e92de0146958c235495b9'; // Récupérer l'ID de l'utilisateur depuis les métadonnées
   const amount = invoice.amount_paid/100; // Montant payé
+
   const payment = new Payment({
-    //userId: userId,
+    userId: userId,
     //subscriptionId: subscriptionId,
     amount: amount,
     status: 'paid',
@@ -102,6 +105,17 @@ const handleInvoicePaid = async (invoice) => {
 try {
   await payment.save();
   console.log('Payment saved successfully');
+
+  const user = await UserModel.findById(userId);
+
+  if (user) {
+    user.credits += 5; // Ajouter 5 crédits à l'utilisateur
+    await user.save();
+    console.log(`User ${userId} credited with 5 credits`);
+  } else {
+    console.log(`User with id ${userId} not found`);
+  }
+
 } catch (err) {
   console.error('Error saving payment:', err);
   throw err;

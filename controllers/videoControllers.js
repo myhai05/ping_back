@@ -1,4 +1,5 @@
 const Video = require('../models/video.model');
+const { io } = require('../socket');
 
 exports.createVideo = async (req, res) => {
   const { title, description } = req.body;
@@ -110,4 +111,51 @@ exports.getVideosByPostAndUser = async (req, res) => {
   }
 };
 
+exports.getAllVideos = async (req, res) => {
+  try {
+    const videos = await Video.find();
+
+    res.status(200).json(videos);
+  } catch (error) {
+    console.error('Error fetching videos:', error);
+    res.status(500).json({ message: 'Error fetching videos' });
+  }
+};
+
+let notifiedUsers = []; 
+
+exports.sendNotification = async (req, res) => {
+  const { userId } = req.body;
+           console.log(userId);
+
+  // Ajouter l'utilisateur à la liste des utilisateurs notifiés si ce n'est pas déjà fait
+  if (!notifiedUsers.includes(userId)) {
+    notifiedUsers.push(userId);
+  }
+
+  // Send the notification to all connected clients
+  io.emit('notification', { userId });
+    console.log(notifiedUsers);
+  res.status(200).send({ success: true, message: 'Notification sent!' });
+};
+
+exports.getNotificatedUsers = async (req, res) => {
+  res.status(200).json({ users: notifiedUsers });
+};
+
+exports.markAsProcesed = async (req, res) => {
+  try {
+    const { videoId } = req.body;
+    const video = await Video.findByIdAndUpdate(videoId, { traite: 'Traité' }, { new: true });
+    
+    if (!video) {
+      return res.status(404).json({ message: 'Video not found' });
+    }
+    
+    res.status(200).json(video);
+  } catch (error) {
+    console.error('Error marking video as processed:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 

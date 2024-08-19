@@ -32,17 +32,6 @@ const userSchema = new mongoose.Schema(//on crée une bibliothéque mongoose dan
       type: String,
       max: 1024,
     },
-    contacts: {
-      type: [
-        {
-          contactId: String,
-          contactName: String,
-          contactPrenom: String,
-          contactTel: Number,
-        }
-      ],
-      required: true,
-    },
     emailToken: {
       type: String,
     },
@@ -64,6 +53,10 @@ const userSchema = new mongoose.Schema(//on crée une bibliothéque mongoose dan
       enum: ['admin', 'user'],
       default: 'user',
     },
+    credits: { 
+      type: Number, 
+      default: 0 
+    }
   }, { timestamps: true },
 );
 

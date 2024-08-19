@@ -35,6 +35,11 @@ const VideoSchema = new mongoose.Schema({
     required: true,
   },
   chapters: [ChapterSchema], // Ajout des chapitres
+  traite: {
+    type: String,
+    enum: ['En cours', 'Traité'], // Possible values
+    default: 'En cours', // Default value is 'En cours'
+  },
   createdAt: {
     type: Date,
     default: Date.now,

@@ -7,12 +7,13 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const { checkUser, requireAuth } = require('./middlewares/authAdmin');
+const { app, server } = require('./socket.js');
 
 dotenv.config();
 
 connectDB();
 
-const app = express();
+//const app = express();
 
 app.use(
   bodyParser.json({
@@ -59,6 +60,11 @@ app.use('/api', router);
 
 
 // server
+/*
 app.listen(process.env.PORT, () => {
     console.log(`Listening on port ${process.env.PORT}`);
-  });
+  });*/
+
+server.listen(process.env.PORT, () => {
+  console.log(`Le serveur écoute sur le port ${process.env.PORT}`);
+});

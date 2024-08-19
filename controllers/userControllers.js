@@ -19,7 +19,7 @@ const createToken = (id, role) => {
 
 
 module.exports.signUp = async (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
   const {  email, password, firstName, lastName } = req.body
 
   try {
@@ -27,7 +27,7 @@ module.exports.signUp = async (req, res) => {
     if(userRegistred) return res.status(400).json("Le mel est déjà utilisé");
 
     const user = await UserModel.create({ email, password, firstName, lastName });
-   // res.status(201).json({ user: user._id });
+   //res.status(201).json({ user: user._id });
    await sendValidationEmail(user, req, res);
   }
   catch (err) {
@@ -143,5 +143,15 @@ module.exports.userInfo = (req, res) => {
       console.log("Error finding user: ", err);
       res.status(500).send("Internal server error");
     });
+};
+
+module.exports.userCredits = async (req, res) => {
+  const { userId, credits } = req.body;
+  try {
+    await UserModel.findByIdAndUpdate(userId, { credits });
+    res.status(200).json({ message: 'Credits deducted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deducting credits', error });
+  }
 };
 
