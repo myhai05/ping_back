@@ -28,8 +28,6 @@ router.post('/deduct-credit', userController.userCredits);
 router.post('/offers/add-offer', offerController.addOffer);
 router.get('/offers/get-offers', offerController.getOffers);
 
-/*router.put('/:id', updateOffer);
-router.delete('/:id', deleteOffer);*/
 
 router.post('/post/add-post', upload.single('video'), videoController.createVideo);
 router.get('/post/get-posts', videoController.getVideos);

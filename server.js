@@ -13,7 +13,6 @@ dotenv.config();
 
 connectDB();
 
-//const app = express();
 
 app.use(
   bodyParser.json({
@@ -39,8 +38,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// jwt
-//app.get('*', checkUser);
 app.get('/jwtid', requireAuth, (req, res) => {
   console.log(req.user);
   const responseData = { userId: req.user , role: req.role };
@@ -57,13 +54,6 @@ app.get('/', (req, res) => {
   });
 
 app.use('/api', router);
-
-
-// server
-/*
-app.listen(process.env.PORT, () => {
-    console.log(`Listening on port ${process.env.PORT}`);
-  });*/
 
 server.listen(process.env.PORT, () => {
   console.log(`Le serveur écoute sur le port ${process.env.PORT}`);

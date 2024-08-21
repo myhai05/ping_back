@@ -19,7 +19,6 @@ const createToken = (id, role) => {
 
 
 module.exports.signUp = async (req, res) => {
-  //console.log(req.body);
   const {  email, password, firstName, lastName } = req.body
 
   try {
@@ -27,7 +26,6 @@ module.exports.signUp = async (req, res) => {
     if(userRegistred) return res.status(400).json("Le mel est déjà utilisé");
 
     const user = await UserModel.create({ email, password, firstName, lastName });
-   //res.status(201).json({ user: user._id });
    await sendValidationEmail(user, req, res);
   }
   catch (err) {
@@ -71,7 +69,7 @@ module.exports.signIn = async (req, res) => {
 module.exports.logout = (req, res) => {
   
   res.cookie('jwt', '', { minAge: 1, httpOnly: true });
-  //res.clearCookie('jwt');
+
   res.redirect('/login');
 
 }

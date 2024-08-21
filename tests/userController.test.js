@@ -38,7 +38,6 @@ describe('POST /register', () => {
           });
     
         expect(res.statusCode).toEqual(200); 
-       // expect(res.body).toHaveProperty('user');
     
         const user = await UserModel.findOne({ email: 'mihail.dimitriu05@gmail.com' });
         expect(user).not.toBeNull();

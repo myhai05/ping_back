@@ -48,8 +48,7 @@ module.exports.requireAuth = (req, res, next) => {
         console.log(err);
         res.send(403).json({ message: 'Token invalid or expired' })
       } else {
-       // console.log('Decoded Token ID:', decodedToken.id);
-        req.user = decodedToken.id;  // Add the decoded token to the request object
+        req.user = decodedToken.id; 
         req.role = decodedToken.role;
         next();
       }
@@ -57,29 +56,4 @@ module.exports.requireAuth = (req, res, next) => {
   } else {
     console.log('No token');
   }
-  /* 
-    if (cookieHeader) {
-      const token = cookieHeader.split(';').find(cookie => cookie.trim().startsWith('jwt='));
-            
-      if (token) {
-        const tokenValue = token.split('=')[1].trim();
-        console.log('voici le token '+tokenValue);
-        jwt.verify(tokenValue, secretJwt, async (err, decodedToken) => {
-          if (err) {
-            console.error(err);
-            res.status(401).json('Token invalide');
-          } else {
-            console.log(req.user);
-            req.user = decodedToken; // Ajouter le token décodé à la requête pour une utilisation ultérieure
-            next();
-          }
-        });
-      } else {
-        console.log("Aucun token JWT trouvé dans l'en-tête Cookie.");
-        res.status(401).json('Token manquant');
-      }
-    } else {
-      console.log("Aucun en-tête Cookie trouvé.");
-      res.status(401).json('En-tête Cookie manquant');
-    }*/
   };

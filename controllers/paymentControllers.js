@@ -65,7 +65,7 @@ exports.createPaymentIntent = async (req, res) => {
 // Webhook pour gérer les événements Stripe
 exports.handleWebhook = async (req, res) => {
     
-  endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
   const sig = req.headers['stripe-signature'];
   let event;
 
@@ -76,10 +76,11 @@ exports.handleWebhook = async (req, res) => {
   }
 
   switch (event.type) {
-    case 'invoice.paid':
+    case 'invoice.paid': {
       const invoice = event.data.object;
       await handleInvoicePaid(invoice);
       break;
+    }
     // Ajoutez ici d'autres types d'événements que vous souhaitez gérer
     default:
       console.log(`Unhandled event type ${event.type}`);

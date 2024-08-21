@@ -55,8 +55,7 @@ exports.saveChapters = async (req, res) => {
 
   try {
     // Parcourir les chapitres envoyés dans la requête
-    for (let i = 0; i < chapters.length; i++) {
-      const { time, comment } = chapters[i];
+    for (const { time, comment } of chapters) {
 
       // Chercher si un chapitre avec le même temps existe déjà pour ce postId
       const existingChapter = await Video.findOneAndUpdate(
@@ -82,6 +81,7 @@ exports.saveChapters = async (req, res) => {
 
 
 
+
 exports.getChapters = async (req, res) => {
   const { videoId } = req.params;
 
@@ -98,9 +98,6 @@ exports.getVideosByPostAndUser = async (req, res) => {
   const { postId } = req.query;
 
   try {
-    const allVideos = await Video.find();
-
-
     // Rechercher des vidéos par leur _id au lieu de postId
     const post = await Video.find({ _id: postId });
 
