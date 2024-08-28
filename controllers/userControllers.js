@@ -3,6 +3,8 @@ const UserModel = require('../models/user.model');
 const jwt = require('jsonwebtoken');
 const { sendValidationEmail } = require('../utils/sendVerificationMail');
 const ObjectID = require('mongoose').Types.ObjectId;
+const path = require('path');
+const fs = require('fs');
 
 
 
@@ -95,35 +97,49 @@ module.exports.userDelete = async (req, res) => {
   }
 };
 
+
 module.exports.userUpdate = async (req, res) => {
-  const _id = req.params.id; // Supposant que l'ID de l'utilisateur à mettre à jour est passé en tant que paramètre d'URL
-  const { email, password, firstName, lastName } = req.body; // Nouvelles informations de l'utilisateur à partir du corps de la requête
+   console.log(req.body);
+   console.log(req.file);
+  const _id = req.params.id; // Get the user ID from the request parameters
+  const { email, firstName, lastName } = req.body; // Get the user data from the request body
 
   try {
-    // Chercher l'utilisateur dans la base de données
+    // Find the user by ID in the database
     let user = await UserModel.findById(_id);
 
-    // Si l'utilisateur n'est pas trouvé, envoyer une réponse 404 (Non trouvé)
+    // If the user is not found, return a 404 error
     if (!user) {
-      return res.status(404).json({ message: "Utilisateur non  trouvé" });
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
 
-    // Mettre à jour les informations de l'utilisateur avec les nouvelles valeurs
-    user.email = email;
-    user.password = password;
-    user.firstName = firstName;
-    user.lastName = lastName;
+    // Update user information only if provided
+    if (email) user.email = email;
+    if (firstName) user.firstName = firstName;
+    if (lastName) user.lastName = lastName;
 
-    // Enregistrer les modifications dans la base de données
+    // Check if a profile picture file was uploaded
+    if (req.file) {
+      // If a previous profile picture exists, remove it
+      if (user.picture && user.picture !== `uploads/profil/${req.file.filename}`) {
+        fs.unlinkSync(path.join(__dirname, '..', user.picture));
+      }
+
+      // Save the new profile picture path
+      user.picture = `uploads/profil/${req.file.filename}`;
+    }
+
+    // Save the updated user information to the database
     await user.save();
 
-    // Envoyer une réponse 200 (OK) si la mise à jour est réussie
-    res.status(200).json({ message: "Informations de l'utilisateur mises à jour avec succès" });
+    // Send a success response
+    res.status(200).json({ message: "Informations de l'utilisateur mises à jour avec succès", user });
   } catch (err) {
-    // En cas d'erreur, envoyer une réponse 500 (Erreur de serveur interne)
+    // Handle errors and send a 500 response
     res.status(500).json({ error: err.message });
   }
 };
+
 
 module.exports.userInfo = (req, res) => {
   if (!ObjectID.isValid(req.params.id))

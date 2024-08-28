@@ -5,7 +5,7 @@ exports.createVideo = async (req, res) => {
   const { title, description } = req.body;
   const userId = req.body.userId;
   const videoUrl = req.file.path; // Récupérer l'URL du fichier uploadé
-  console.log(req.body);
+  
   try {
     const newVideo = new Video({ title, description, videoUrl, userId });
     await newVideo.save();

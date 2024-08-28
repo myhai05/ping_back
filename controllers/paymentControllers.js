@@ -64,7 +64,7 @@ exports.createPaymentIntent = async (req, res) => {
 
 // Webhook pour gérer les événements Stripe
 exports.handleWebhook = async (req, res) => {
-    
+    console.log(req);
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
   const sig = req.headers['stripe-signature'];
   let event;

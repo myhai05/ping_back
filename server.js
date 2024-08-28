@@ -6,7 +6,7 @@ const router = require('./routes/user.routes');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path');
-const { checkUser, requireAuth } = require('./middlewares/authAdmin');
+const { requireAuth } = require('./middlewares/authAdmin');
 const { app, server } = require('./socket.js');
 
 dotenv.config();
@@ -32,14 +32,14 @@ const corsOptions = {
   credentials: true, // Permet l'envoi des cookies à travers les domaines
   allowedHeaders: ['sessionId','Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'], // Headers autorisés
   exposedHeaders: ['sessionId'], // Headers exposés
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Méthodes HTTP autorisées
+  methods: ['GET,HEAD,PUT,PATCH,POST,DELETE'], // Méthodes HTTP autorisées
   preflightContinue: false,
 };
 
 app.use(cors(corsOptions));
 
 app.get('/jwtid', requireAuth, (req, res) => {
-  console.log(req.user);
+  
   const responseData = { userId: req.user , role: req.role };
 
   res.status(200).send({ responseData });

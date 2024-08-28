@@ -10,7 +10,7 @@ const videoController = require('../controllers/videoControllers');
 const upload = require('../middlewares/upload');
 const paymentController = require('../controllers/paymentControllers');
 const bodyParser = require('body-parser');
-
+const uploadPhoto = require('../middlewares/uploadPhoto');
 
 
 router.post("/register", userController.signUp);
@@ -21,7 +21,7 @@ router.post('/login', userController.signIn);
 router.get('/logout', userController.logout);
 router.get("/get-users", userController.getAllUsers);
 router.delete("/:id", userController.userDelete);
-router.put("/:id", userController.userUpdate);
+router.put("/:id", uploadPhoto.single('image'), userController.userUpdate);
 router.get("/:id", userController.userInfo);
 router.post('/deduct-credit', userController.userCredits);
 
