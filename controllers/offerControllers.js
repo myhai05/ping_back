@@ -1,20 +1,15 @@
 const OfferModel = require('../models/offer.model');
 
 module.exports.addOffer = async (req, res) => {
-    // Extract data from req.body
-    console.log(req.body);
     const { title, description, price, validityMonths } = req.body;
-           
     try {
         const newOffer = new OfferModel({ title, description, price, validityMonths });
-        console.log(newOffer);
         await newOffer.save();
         res.status(200).json(newOffer);
     } catch (error) {
         res.status(500).json({ message: 'Error creating offer' });
     }
 };
-
 // Get all offers
 module.exports.getOffers = async (req, res) => {
    try {
@@ -24,7 +19,6 @@ module.exports.getOffers = async (req, res) => {
         res.status(500).json({ message: 'Error fetching offers' });
     }
 };
-
 // Update an offer
 module.exports.updateOffer = async (req, res) => {
     const { title, description, price } = req.body;
@@ -36,7 +30,6 @@ module.exports.updateOffer = async (req, res) => {
         res.status(500).json({ message: 'Error updating offer' });
     }
 };
-
 // Delete an offer
 module.exports.deleteOffer = async (req, res) => {
     try {

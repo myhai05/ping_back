@@ -2,8 +2,7 @@ const Video = require('../models/video.model');
 const { io } = require('../socket');
 
 exports.createVideo = async (req, res) => {
-  const { title, description } = req.body;
-  const userId = req.body.userId;
+  const { title, description, userId } = req.body;
   const videoUrl = req.file.path; // Récupérer l'URL du fichier uploadé
   
   try {
@@ -78,9 +77,6 @@ exports.saveChapters = async (req, res) => {
     res.status(500).json({ message: 'Error saving chapters', error });
   }
 };
-
-
-
 
 exports.getChapters = async (req, res) => {
   const { videoId } = req.params;

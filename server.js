@@ -32,7 +32,7 @@ const corsOptions = {
   credentials: true, // Permet l'envoi des cookies à travers les domaines
   allowedHeaders: ['sessionId','Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'], // Headers autorisés
   exposedHeaders: ['sessionId'], // Headers exposés
-  methods: ['GET,HEAD,PUT,PATCH,POST,DELETE'], // Méthodes HTTP autorisées
+  methods: ['GET','HEAD','PUT','PATCH','POST','DELETE'], // Méthodes HTTP autorisées
   preflightContinue: false,
 };
 

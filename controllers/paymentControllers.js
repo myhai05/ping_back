@@ -8,8 +8,8 @@ require('dotenv').config();
 exports.checkoutSession = async (req, res) => {
   const { amount, userId } = req.body;
   console.log(req.body);
-    console.log(userId);
-  
+  console.log(userId);
+
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -64,7 +64,7 @@ exports.createPaymentIntent = async (req, res) => {
 
 // Webhook pour gérer les événements Stripe
 exports.handleWebhook = async (req, res) => {
-    console.log(req);
+  console.log(req);
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
   const sig = req.headers['stripe-signature'];
   let event;
@@ -92,7 +92,7 @@ exports.handleWebhook = async (req, res) => {
 const handleInvoicePaid = async (invoice) => {
 
   const userId = invoice.metadata.userId; //'668e92de0146958c235495b9'; // Récupérer l'ID de l'utilisateur depuis les métadonnées
-  const amount = invoice.amount_paid/100; // Montant payé
+  const amount = invoice.amount_paid / 100; // Montant payé
 
   const payment = new Payment({
     userId: userId,
@@ -103,25 +103,24 @@ const handleInvoicePaid = async (invoice) => {
     date: new Date(invoice.created * 1000) // Convertir le timestamp Unix en date JS
   });
 
-try {
-  await payment.save();
-  console.log('Payment saved successfully');
+  try {
+    await payment.save();
+    console.log('Payment saved successfully');
 
-  const user = await UserModel.findById(userId);
+    const user = await UserModel.findById(userId);
 
-  if (user) {
-    user.credits += 5; // Ajouter 5 crédits à l'utilisateur
-    await user.save();
-    console.log(`User ${userId} credited with 5 credits`);
-  } else {
-    console.log(`User with id ${userId} not found`);
+    if (user) {
+      user.credits += 5; // Ajouter 5 crédits à l'utilisateur
+      await user.save();
+      console.log(`User ${userId} credited with 5 credits`);
+    } else {
+      console.log(`User with id ${userId} not found`);
+    }
+
+  } catch (err) {
+    console.error('Error saving payment:', err);
+    throw err;
   }
-
-} catch (err) {
-  console.error('Error saving payment:', err);
-  throw err;
-}
-
 }
 
 // Récupérer tous les paiements

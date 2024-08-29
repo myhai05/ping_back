@@ -1,4 +1,3 @@
-require('dotenv').config();
 const UserModel = require('../models/user.model');
 const jwt = require('jsonwebtoken');
 const { sendValidationEmail } = require('../utils/sendVerificationMail');
@@ -6,11 +5,7 @@ const ObjectID = require('mongoose').Types.ObjectId;
 const path = require('path');
 const fs = require('fs');
 
-
-
-
 const maxAge = 60 * 60 * 1000;
-const minAge = 1;
 const jwtSecret = process.env.JWT_SECRET;
 
 const createToken = (id, role) => {
@@ -19,48 +14,19 @@ const createToken = (id, role) => {
   })
 };
 
-
-module.exports.signUp = async (req, res) => {
-  const {  email, password, firstName, lastName } = req.body
-
-  try {
-    let userRegistred = await UserModel.findOne({ email });
-    if(userRegistred) return res.status(400).json("Le mel est déjà utilisé");
-
-    const user = await UserModel.create({ email, password, firstName, lastName });
-   await sendValidationEmail(user, req, res);
-  }
-  catch (err) {
-    res.status(200).send({ err });
-    console.log(err);
-  }
-}
-
 module.exports.signIn = async (req, res) => {
   const { email, password } = req.body;
-       
+
   try {
     const user = await UserModel.login(email, password);
-    
-    const token = createToken(user._id,user.role);//création d'un token avec l'id et la clé secrète
-
-
-    res.cookie('jwt', token, { httpOnly: true, maxAge, secure: true, // use secure cookies in production
-      sameSite: 'None' });
+    const token = createToken(user._id, user.role);//création d'un token avec l'id et la clé secrèt
+    res.cookie('jwt', token, {
+      httpOnly: true, maxAge, secure: true, 
+      sameSite: 'None'
+    });
     const responseData = {
       userId: user._id,
       role: user.role,
-      //email: user.email,
-      //picture: user.picture,
-      //firstName: user.firstName,
-      //lastName: user.lastName,
-     // contacts: user.contacts.map(contact => ({
-      //  contactId: contact._id,
-     //   contactName: contact.contactName,
-     //   contactPrenom: contact.contactPrenom,
-     //   contactTel: contact.contactTel
-     // })),
-      // Include any other fields you want to return
     };
     res.status(200).json({ responseData }); // Retourner un message de succès avec le token   
   } catch (err) {
@@ -68,22 +34,22 @@ module.exports.signIn = async (req, res) => {
   }
 }
 
-module.exports.logout = (req, res) => {
-  
-  res.cookie('jwt', '', { minAge: 1, httpOnly: true });
 
-  res.redirect('/login');
+module.exports.signUp = async (req, res) => {
+  const { email, password, firstName, lastName } = req.body
 
+  try {
+    let userRegistred = await UserModel.findOne({ email });
+    if (userRegistred) return res.status(400).json("Le mel est déjà utilisé");
+    const user = await UserModel.create({ email, password, firstName, lastName });
+    await sendValidationEmail(user, req, res);
+  }
+  catch (err) {
+    res.status(200).send({ err });
+    console.log(err);
+  }
 }
 
-
-module.exports.getAllUsers = async (req, res) => {
-  const users = await UserModel.find().select("-password");
-  res.status(200).json(users);
-};
-
-
-// Fonction pour supprimer un utilisateur
 module.exports.userDelete = async (req, res) => {
 
   if (!ObjectID.isValid(req.params.id))
@@ -97,10 +63,7 @@ module.exports.userDelete = async (req, res) => {
   }
 };
 
-
 module.exports.userUpdate = async (req, res) => {
-   console.log(req.body);
-   console.log(req.file);
   const _id = req.params.id; // Get the user ID from the request parameters
   const { email, firstName, lastName } = req.body; // Get the user data from the request body
 
@@ -140,7 +103,6 @@ module.exports.userUpdate = async (req, res) => {
   }
 };
 
-
 module.exports.userInfo = (req, res) => {
   if (!ObjectID.isValid(req.params.id))
     return res.status(400).send("ID unknown : " + req.params.id);
@@ -158,6 +120,29 @@ module.exports.userInfo = (req, res) => {
       res.status(500).send("Internal server error");
     });
 };
+
+
+
+module.exports.logout = (req, res) => {
+  res.cookie('jwt', '', { minAge: 1, httpOnly: true });
+  res.redirect('/login');
+}
+
+
+module.exports.getAllUsers = async (req, res) => {
+  const users = await UserModel.find().select("-password");
+  res.status(200).json(users);
+};
+
+
+// Fonction pour supprimer un utilisateur
+
+
+
+
+
+
+
 
 module.exports.userCredits = async (req, res) => {
   const { userId, credits } = req.body;
