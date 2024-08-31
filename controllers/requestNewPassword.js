@@ -22,7 +22,7 @@ exports.requestResetPassword = async (req, res) => {
     await user.save();
 
     const resetURL = `${req.protocol}://${process.env.FRONT_URL}/reset-form/${resetToken}`;
-    console.log(resetURL);
+
     const emailText = `Click here to reset your password: ${resetURL}`;
     await sendEmail(user.email, 'Password Reset Request', emailText);
 

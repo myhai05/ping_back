@@ -44,7 +44,6 @@ router.put('/post/mark-as-processed', videoController.markAsProcesed);
 
 // Routes paiement
 router.post('/payment/create-checkout-session', paymentController.checkoutSession);
-router.post('/payment/create-payment-intent', paymentController.createPaymentIntent);
 router.post('/payment/webhook', express.raw({type: 'application/json'}), paymentController.handleWebhook);
 router.get('/payment/get-payments', paymentController.getAllPayments);
 

@@ -5,7 +5,7 @@ module.exports.addOffer = async (req, res) => {
     try {
         const newOffer = new OfferModel({ title, description, price, validityMonths });
         await newOffer.save();
-        res.status(200).json(newOffer);
+        res.status(200).json("New offer added");
     } catch (error) {
         res.status(500).json({ message: 'Error creating offer' });
     }
@@ -19,17 +19,7 @@ module.exports.getOffers = async (req, res) => {
         res.status(500).json({ message: 'Error fetching offers' });
     }
 };
-// Update an offer
-module.exports.updateOffer = async (req, res) => {
-    const { title, description, price } = req.body;
-    
-    try {
-        const updatedOffer = await OfferModel.findByIdAndUpdate(req.params.id, { title, description, price }, { new: true });
-        res.status(200).json(updatedOffer);
-    } catch (error) {
-        res.status(500).json({ message: 'Error updating offer' });
-    }
-};
+
 // Delete an offer
 module.exports.deleteOffer = async (req, res) => {
     try {

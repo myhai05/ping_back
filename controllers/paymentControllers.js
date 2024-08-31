@@ -41,27 +41,6 @@ exports.checkoutSession = async (req, res) => {
   }
 };
 
-
-
-// Créer un PaymentIntent
-exports.createPaymentIntent = async (req, res) => {
-
-  const { amount, userId, offerId } = req.body;
-  console.log(req);
-  try {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount,
-      currency: 'usd',
-      metadata: { userId, offerId }
-    });
-    res.status(200).send({
-      clientSecret: paymentIntent.client_secret,
-    });
-  } catch (error) {
-    res.status(500).send({ error: error.message });
-  }
-};
-
 // Webhook pour gérer les événements Stripe
 exports.handleWebhook = async (req, res) => {
   console.log(req);
@@ -91,7 +70,7 @@ exports.handleWebhook = async (req, res) => {
 
 const handleInvoicePaid = async (invoice) => {
 
-  const userId = invoice.metadata.userId; //'668e92de0146958c235495b9'; // Récupérer l'ID de l'utilisateur depuis les métadonnées
+  const userId = '668e92de0146958c235495b9'; // invoice.metadata.userId;; // Récupérer l'ID de l'utilisateur depuis les métadonnées
   const amount = invoice.amount_paid / 100; // Montant payé
 
   const payment = new Payment({

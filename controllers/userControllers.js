@@ -45,15 +45,12 @@ module.exports.signUp = async (req, res) => {
     await sendValidationEmail(user, req, res);
   }
   catch (err) {
-    res.status(200).send({ err });
+    res.status(500).send({ err });
     console.log(err);
   }
 }
 
 module.exports.userDelete = async (req, res) => {
-
-  if (!ObjectID.isValid(req.params.id))
-    return res.status(400).send("ID unknown : " + req.params.id);
 
   try {
     await UserModel.deleteOne({ _id: req.params.id }).exec(); // Utiliser deleteOne() au lieu de remove()
@@ -71,56 +68,33 @@ module.exports.userUpdate = async (req, res) => {
     // Find the user by ID in the database
     let user = await UserModel.findById(_id);
 
-    // If the user is not found, return a 404 error
-    if (!user) {
-      return res.status(404).json({ message: "Utilisateur non trouvé" });
-    }
-
     // Update user information only if provided
     if (email) user.email = email;
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;
-
-    // Check if a profile picture file was uploaded
     if (req.file) {
-      // If a previous profile picture exists, remove it
-      if (user.picture && user.picture !== `uploads/profil/${req.file.filename}`) {
-        fs.unlinkSync(path.join(__dirname, '..', user.picture));
-      }
-
-      // Save the new profile picture path
-      user.picture = `uploads/profil/${req.file.filename}`;
+      user.picture = `uploads/profil/${req.file.filename}`;// Check if a profile picture file was uploaded
     }
-
     // Save the updated user information to the database
     await user.save();
 
     // Send a success response
-    res.status(200).json({ message: "Informations de l'utilisateur mises à jour avec succès", user });
+    res.status(200).json({ message: "Informations de l'utilisateur mises à jour avec succès"});
   } catch (err) {
     // Handle errors and send a 500 response
     res.status(500).json({ error: err.message });
   }
 };
 
-module.exports.userInfo = (req, res) => {
-  if (!ObjectID.isValid(req.params.id))
-    return res.status(400).send("ID unknown : " + req.params.id);
-
-  UserModel.findById(req.params.id)
-    .select("-password")
-    .then(docs => {
-      if (!docs) {
-        return res.status(404).send("User not found");
-      }
-      res.send(docs);
-    })
-    .catch(err => {
-      console.log("Error finding user: ", err);
-      res.status(500).send("Internal server error");
-    });
+module.exports.userInfo = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.params.id).select("-password");
+    if (user) { res.json(user);} 
+  } catch (err) {
+    console.log("User not found ", err);
+    res.status(500).send("Internal server error");
+  }
 };
-
 
 
 module.exports.logout = (req, res) => {
@@ -133,15 +107,6 @@ module.exports.getAllUsers = async (req, res) => {
   const users = await UserModel.find().select("-password");
   res.status(200).json(users);
 };
-
-
-// Fonction pour supprimer un utilisateur
-
-
-
-
-
-
 
 
 module.exports.userCredits = async (req, res) => {

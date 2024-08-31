@@ -83,7 +83,6 @@ exports.getChapters = async (req, res) => {
 
   try {
     const chapters = await Video.find({ videoId });
-
     res.status(200).json(chapters);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching chapters', error });
@@ -92,7 +91,6 @@ exports.getChapters = async (req, res) => {
 
 exports.getVideosByPostAndUser = async (req, res) => {
   const { postId } = req.query;
-
   try {
     // Rechercher des vidéos par leur _id au lieu de postId
     const post = await Video.find({ _id: postId });
@@ -119,16 +117,14 @@ let notifiedUsers = [];
 
 exports.sendNotification = async (req, res) => {
   const { userId } = req.body;
-           console.log(userId);
 
   // Ajouter l'utilisateur à la liste des utilisateurs notifiés si ce n'est pas déjà fait
   if (!notifiedUsers.includes(userId)) {
     notifiedUsers.push(userId);
   }
-
   // Send the notification to all connected clients
   io.emit('notification', { userId });
-    console.log(notifiedUsers);
+    
   res.status(200).send({ success: true, message: 'Notification sent!' });
 };
 
