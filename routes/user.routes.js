@@ -33,7 +33,6 @@ router.post('/post/add-post', upload.single('video'), videoController.createVide
 router.get('/post/get-posts', videoController.getVideos);
 router.get('/post/get-video', videoController.getVideosByPostAndUser);
 router.get('/post/get-all-posts', videoController.getAllVideos);
-router.put('/:id',  videoController.updateVideo);
 router.delete('/:id', videoController.deleteVideo);
 router.post('/post/send-notification', videoController.sendNotification);
 router.get('/post/get-notifications', videoController.getNotificatedUsers)

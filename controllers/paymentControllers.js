@@ -75,10 +75,8 @@ const handleInvoicePaid = async (invoice) => {
 
   const payment = new Payment({
     userId: userId,
-    //subscriptionId: subscriptionId,
     amount: amount,
     status: 'paid',
-    //invoiceId: invoice.id,
     date: new Date(invoice.created * 1000) // Convertir le timestamp Unix en date JS
   });
 

@@ -8,7 +8,7 @@ exports.createVideo = async (req, res) => {
   try {
     const newVideo = new Video({ title, description, videoUrl, userId });
     await newVideo.save();
-    res.status(201).json(newVideo);
+    res.status(200).json(newVideo);
   } catch (error) {
     res.status(500).json({ message: 'Error creating video' });
   }
@@ -26,23 +26,11 @@ exports.getVideos = async (req, res) => {
   }
 };
 
-exports.updateVideo = async (req, res) => {
-  const { title, description, videoUrl } = req.body;
-  try {
-    const updatedVideo = await Video.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user._id },
-      { title, description, videoUrl },
-      { new: true }
-    );
-    res.status(200).json(updatedVideo);
-  } catch (error) {
-    res.status(500).json({ message: 'Error updating video' });
-  }
-};
-
 exports.deleteVideo = async (req, res) => {
   try {
+
     await Video.findOneAndDelete({ _id: req.params.id, userId: req.user._id });
+    
     res.status(200).json({ message: 'Video deleted' });
   } catch (error) {
     res.status(500).json({ message: 'Error deleting video' });

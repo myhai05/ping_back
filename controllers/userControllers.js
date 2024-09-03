@@ -1,8 +1,6 @@
 const UserModel = require('../models/user.model');
 const jwt = require('jsonwebtoken');
 const { sendValidationEmail } = require('../utils/sendVerificationMail');
-const ObjectID = require('mongoose').Types.ObjectId;
-const path = require('path');
 const fs = require('fs');
 
 const maxAge = 60 * 60 * 1000;
@@ -18,7 +16,7 @@ module.exports.signIn = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await UserModel.login(email, password);
+    const user = await UserModel.login(email, password);//apelle de la fonction login
     const token = createToken(user._id, user.role);//création d'un token avec l'id et la clé secrèt
     res.cookie('jwt', token, {
       httpOnly: true, maxAge, secure: true, 
