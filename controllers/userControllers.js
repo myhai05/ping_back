@@ -2,6 +2,8 @@ const UserModel = require('../models/user.model');
 const jwt = require('jsonwebtoken');
 const { sendValidationEmail } = require('../utils/sendVerificationMail');
 const fs = require('fs');
+const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
 
 const maxAge = 60 * 60 * 1000;
 const jwtSecret = process.env.JWT_SECRET;
@@ -12,41 +14,79 @@ const createToken = (id, role) => {
   })
 };
 
+
 module.exports.signIn = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await UserModel.login(email, password);//apelle de la fonction login
-    const token = createToken(user._id, user.role);//création d'un token avec l'id et la clé secrèt
+    // Check if the user exists
+    const user = await UserModel.findOne({ email });
+    if (!user) return res.status(400).json("L'utilisateur n'existe pas");
+
+    // Check if the user is verified
+    if (!user.isVerified) return res.status(403).json("Veuillez valoder votre adresse email avant de vous connecter");
+
+    // Compare the provided password with the hashed password in the database
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) return res.status(401).json("Mot de passe incorrect");
+
+    // Create the token with the user's ID and role
+    const token = createToken(user._id, user.role);
+    
+    // Set the token as a cookie
     res.cookie('jwt', token, {
-      httpOnly: true, maxAge, secure: true, 
-      sameSite: 'None'
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // Token expires in 1 day (adjust as necessary)
+      secure: true, // For HTTPS
+      sameSite: 'None' // For cross-site cookie sharing
     });
+
+    // Prepare the response data
     const responseData = {
       userId: user._id,
       role: user.role,
     };
-    res.status(200).json({ responseData }); // Retourner un message de succès avec le token   
+
+    // Return success message with the user data
+    res.status(200).json({ responseData });
   } catch (err) {
-    res.status(401).json(err);
+    res.status(500).json({ error: 'Erreur interne du serveur', details: err });
   }
-}
+};
 
 
 module.exports.signUp = async (req, res) => {
-  const { email, password, firstName, lastName } = req.body
+  const { email, password, firstName, lastName } = req.body;
+  const token = crypto.randomBytes(16).toString('hex');
+
+  const emailToken = token;
+  const emailTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // Token expires in 24 hours
 
   try {
     let userRegistred = await UserModel.findOne({ email });
-    if (userRegistred) return res.status(400).json("Le mel est déjà utilisé");
-    const user = await UserModel.create({ email, password, firstName, lastName });
-    await sendValidationEmail(user, req, res);
-  }
-  catch (err) {
+    if (userRegistred) return res.status(400).json("Le mél est déjà utilisé");
+
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create the user with the hashed password
+    const user = await UserModel.create({
+      email,
+      password: hashedPassword,
+      firstName,
+      lastName,
+      emailToken,
+      emailTokenExpires
+    });
+
+    await sendValidationEmail(user, token);
+    res.status(200).json("Un mél de validation a été envoyé");
+  } catch (err) {
     res.status(500).send({ err });
-    console.log(err);
   }
-}
+};
+
 
 module.exports.userDelete = async (req, res) => {
 

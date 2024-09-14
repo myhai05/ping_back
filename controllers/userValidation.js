@@ -11,6 +11,7 @@ module.exports.verifyEmail = async (req, res) => {
   
       user.isVerified = true;
       user.emailToken = null;
+      user.emailTokenExpires = null
       await user.save();
   
       res.status(200).send('Email has been successfully verified.');

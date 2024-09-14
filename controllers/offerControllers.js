@@ -22,6 +22,7 @@ module.exports.getOffers = async (req, res) => {
 
 // Delete an offer
 module.exports.deleteOffer = async (req, res) => {
+    console.log(req);
     try {
         await OfferModel.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: 'Offer deleted' });

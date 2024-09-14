@@ -2,47 +2,29 @@ const mongoose = require('mongoose');
 
 const ChapterSchema = new mongoose.Schema({
   videoId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Video',
-    required: true,
+    type: mongoose.Schema.Types.ObjectId, ref: 'Video', required: true,
   },
-  time: {
-    type: Number,
-    required: true,
+  time: { type: Number, required: true,
   },
-  comment: {
-    type: String,
-    required: true,
+  comment: { type: String
   },
 });
 
 const VideoSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
+  title: { type: String, required: true,
   },
-  description: {
-    type: String,
-    required: true,
+  description: { type: String, required: true,
   },
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true,
   },
-  videoUrl: {
-    type: String,
-    required: true,
+  videoUrl: { type: String, required: true,
   },
   chapters: [ChapterSchema], // Ajout des chapitres
-  traite: {
-    type: String,
+  traite: { type: String,
     enum: ['En cours', 'Traité'], // Possible values
     default: 'En cours', // Default value is 'En cours'
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
+  createdAt: { type: Date, default: Date.now,
   },
 });
 

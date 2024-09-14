@@ -1,5 +1,7 @@
 const Video = require('../models/video.model');
 const { io } = require('../socket');
+const fs = require('fs');
+const path = require('path');
 
 exports.createVideo = async (req, res) => {
   const { title, description, userId } = req.body;
@@ -28,8 +30,12 @@ exports.getVideos = async (req, res) => {
 
 exports.deleteVideo = async (req, res) => {
   try {
+    const videoToDelete = await Video.findById(req.params._id);
+    
+    await Video.findOneAndDelete({ _id: req.params.id, });
+    const videoPath = path.join(__dirname, '..', videoToDelete.videoUrl);
 
-    await Video.findOneAndDelete({ _id: req.params.id, userId: req.user._id });
+    fs.unlink(videoPath);
     
     res.status(200).json({ message: 'Video deleted' });
   } catch (error) {

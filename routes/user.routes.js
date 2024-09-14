@@ -27,13 +27,14 @@ router.post('/deduct-credit', userController.userCredits);
 
 router.post('/offers/add-offer', offerController.addOffer);
 router.get('/offers/get-offers', offerController.getOffers);
+router.delete('/offers/delete-offer/:id', offerController.deleteOffer);
 
 
 router.post('/post/add-post', upload.single('video'), videoController.createVideo);
 router.get('/post/get-posts', videoController.getVideos);
 router.get('/post/get-video', videoController.getVideosByPostAndUser);
 router.get('/post/get-all-posts', videoController.getAllVideos);
-router.delete('/:id', videoController.deleteVideo);
+router.delete('/post/:id', videoController.deleteVideo);
 router.post('/post/send-notification', videoController.sendNotification);
 router.get('/post/get-notifications', videoController.getNotificatedUsers)
 

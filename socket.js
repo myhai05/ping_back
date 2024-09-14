@@ -12,20 +12,34 @@ const server = http.createServer(app);
 // Set up Socket.IO with CORS configuration
 const io = new Server(server, {
   cors: {
-    origin: '*', // Allow all origins
-    methods: ["POST"], // Allow POST method
+    origin: process.env.FRONEND_CORS_URL, // Allow all origins
+    methods: ["POST","GET"], // Allow POST method
+    credentials: true
   },
 });
 
+let notifications = [];
+
 // Handle client connections
-io.on('connection', (socket) => {
-  console.log('New client connected');
+io.on('connection', (socket) => {  // console.log('New client connected:', socket.id);
+ 
+  socket.emit('notifications', notifications);
+
+  socket.on("notifications_received", () => {
+    notifications = []; // Clear the notifications once they've been received
+  });
 
   socket.on('notification', (data) => {
-    console.log('Notification received:', data);
-  })
+    notifications.push({ data });
+  });
+
+  socket.on('disconnect', (reason) => {
+    console.log('Client disconnected:', socket.id, 'Reason:', reason);
+  });
+
+  socket.on('error', (error) => {
+    console.error('Socket error:', error);
+  });
 });
-
-
 // Export the app, io, and server instances
 module.exports = { app, io, server };

@@ -7,8 +7,6 @@ require('dotenv').config();
 
 exports.checkoutSession = async (req, res) => {
   const { amount, userId } = req.body;
-  console.log(req.body);
-  console.log(userId);
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -26,14 +24,13 @@ exports.checkoutSession = async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.FRONEND_CORS_URL}/private`,
+      success_url: `${process.env.FRONEND_CORS_URL}/success`,
       cancel_url: `${process.env.FRONEND_CORS_URL}/cancel`,
       //customer: user.stripeCustomerId, // Attach the Stripe customer ID
       metadata: {
         userId: userId, // Attach the userId in the metadata
       },
     });
-
     res.json({ sessionId: session.id });
   } catch (error) {
     console.error('Erreur lors de la création de la session Checkout:', error);
@@ -62,7 +59,7 @@ exports.handleWebhook = async (req, res) => {
     }
     // Ajoutez ici d'autres types d'événements que vous souhaitez gérer
     default:
-      console.log(`Unhandled event type ${event.type}`);
+      console.log("Pas de facture payée");
   }
 
   res.status(200).json({ received: true });
@@ -82,17 +79,13 @@ const handleInvoicePaid = async (invoice) => {
 
   try {
     await payment.save();
-    console.log('Payment saved successfully');
-
     const user = await UserModel.findById(userId);
 
     if (user) {
       user.credits += 5; // Ajouter 5 crédits à l'utilisateur
       await user.save();
       console.log(`User ${userId} credited with 5 credits`);
-    } else {
-      console.log(`User with id ${userId} not found`);
-    }
+    } 
 
   } catch (err) {
     console.error('Error saving payment:', err);
