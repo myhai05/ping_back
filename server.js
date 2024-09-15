@@ -26,7 +26,6 @@ app.use(bodyParser.json());//dispacher les body requettes
 
 app.use(cookieParser());
 
-
 const corsOptions = {
   origin: process.env.FRONEND_CORS_URL, // Remplacez par votre domaine front-end 
   credentials: true, // Permet l'envoi des cookies à travers les domaines
