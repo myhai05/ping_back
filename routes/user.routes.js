@@ -35,8 +35,6 @@ router.get('/post/get-posts', videoController.getVideos);
 router.get('/post/get-video', videoController.getVideosByPostAndUser);
 router.get('/post/get-all-posts', videoController.getAllVideos);
 router.delete('/post/:id', videoController.deleteVideo);
-router.post('/post/send-notification', videoController.sendNotification);
-router.get('/post/get-notifications', videoController.getNotificatedUsers)
 
 router.post('/post/save-chapters', videoController.saveChapters);
 router.get('/post/chapters/:videoId', videoController.getChapters);

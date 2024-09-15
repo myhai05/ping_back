@@ -12,9 +12,11 @@ const server = http.createServer(app);
 // Set up Socket.IO with CORS configuration
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONEND_CORS_URL, // Allow all origins
-    methods: ["POST","GET"], // Allow POST method
-    credentials: true
+    origin: process.env.FRONEND_CORS_URL, // Remplacez par votre domaine front-end 
+    credentials: true, // Permet l'envoi des cookies à travers les domaines
+    allowedHeaders: ['sessionId', 'Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'], // Headers autorisés
+    exposedHeaders: ['sessionId'], // Headers exposés
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'], // Méthodes HTTP autorisées
   },
 });
 
@@ -22,7 +24,7 @@ let notifications = [];
 
 // Handle client connections
 io.on('connection', (socket) => {  // console.log('New client connected:', socket.id);
- 
+
   socket.emit('notifications', notifications);
 
   socket.on("notifications_received", () => {

@@ -24,7 +24,7 @@ module.exports.signIn = async (req, res) => {
     if (!user) return res.status(400).json("L'utilisateur n'existe pas");
 
     // Check if the user is verified
-    if (!user.isVerified) return res.status(403).json("Veuillez valoder votre adresse email avant de vous connecter");
+    if (!user.isVerified) return res.status(403).json("Veuillez valider votre adresse email avant de vous connecter");
 
     // Compare the provided password with the hashed password in the database
     const passwordMatch = await bcrypt.compare(password, user.password);

@@ -1,5 +1,4 @@
 const Video = require('../models/video.model');
-const { io } = require('../socket');
 const fs = require('fs');
 const path = require('path');
 
@@ -34,12 +33,17 @@ exports.deleteVideo = async (req, res) => {
     
     await Video.findOneAndDelete({ _id: req.params.id, });
     const videoPath = path.join(__dirname, '..', videoToDelete.videoUrl);
-
-    fs.unlink(videoPath);
-    
-    res.status(200).json({ message: 'Video deleted' });
+    console.log(videoPath);
+    fs.unlink(videoPath, (err) => {
+      if (err) {
+        console.error('Erreur lors de la suppression du fichier vidéo :', err);
+        return res.status(500).json({ message: 'Erreur lors de la suppression du fichier vidéo' });
+      }
+      res.status(200).json({ message: 'Vidéo supprimée avec succès' });
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting video' });
+    console.error('Erreur lors de la suppression de la vidéo :', error);
+    res.status(500).json({ message: 'Erreur lors de la suppression de la vidéo' });
   }
 };
 
@@ -107,35 +111,19 @@ exports.getAllVideos = async (req, res) => {
   }
 };
 
-let notifiedUsers = []; 
-
-exports.sendNotification = async (req, res) => {
-  const { userId } = req.body;
-
-  // Ajouter l'utilisateur à la liste des utilisateurs notifiés si ce n'est pas déjà fait
-  if (!notifiedUsers.includes(userId)) {
-    notifiedUsers.push(userId);
-  }
-  // Send the notification to all connected clients
-  io.emit('notification', { userId });
-    
-  res.status(200).send({ success: true, message: 'Notification sent!' });
-};
-
-exports.getNotificatedUsers = async (req, res) => {
-  res.status(200).json({ users: notifiedUsers });
-};
 
 exports.markAsProcesed = async (req, res) => {
   try {
-    const { videoId } = req.body;
-    const video = await Video.findByIdAndUpdate(videoId, { traite: 'Traité' }, { new: true });
+    const { postId } = req.body;
+    const video = await Video.findByIdAndUpdate(postId, { traite: 'Traité' }, { new: true });
+
+    console.log(postId);
     
-    if (!video) {
+    if (!postId) {
       return res.status(404).json({ message: 'Video not found' });
     }
     
-    res.status(200).json(video);
+    res.status(200).json(postId);
   } catch (error) {
     console.error('Error marking video as processed:', error);
     res.status(500).json({ message: 'Internal server error' });
