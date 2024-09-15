@@ -15,6 +15,18 @@ app.use((req, res, next) => {
   next();
 });
 
+// Middleware pour gérer les requêtes OPTIONS
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Origin', process.env.FRONEND_CORS_URL);
+    res.header('Access-Control-Allow-Methods', 'GET, POST');
+    res.header('Access-Control-Allow-Headers', 'sessionId, Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    return res.status(204).end(); // Réponds avec un statut 204 No Content pour les requêtes OPTIONS
+  }
+  next();
+});
+
 // Set up Socket.IO with CORS configuration
 const io = new Server(server, {
   cors: {
@@ -47,5 +59,6 @@ io.on('connection', (socket) => {  // console.log('New client connected:', socke
     console.error('Socket error:', error);
   });
 });
+
 // Export the app, io, and server instances
 module.exports = { app, io, server };
