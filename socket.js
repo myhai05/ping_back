@@ -20,9 +20,7 @@ const io = new Server(server, {
   cors: {
     origin: process.env.FRONEND_CORS_URL, // Remplacez par votre domaine front-end 
     credentials: true, // Permet l'envoi des cookies à travers les domaines
-    allowedHeaders: ['sessionId', 'Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'], // Headers autorisés
-    methods: ['GET', 'POST'], // Méthodes HTTP autorisées
-    preflightContinue: false,
+    methods: ["GET", "POST"], // Méthodes HTTP autorisées
   },
 });
 
