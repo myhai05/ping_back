@@ -3,6 +3,7 @@ const { Server } = require("socket.io");
 const http = require("http");
 const express = require("express");
 
+
 // Create an Express application
 const app = express();
 
@@ -16,13 +17,7 @@ app.use((req, res, next) => {
 });
 
 // Set up Socket.IO with CORS configuration
-const io = new Server(server, {
-  cors: {
-    origin: process.env.FRONEND_CORS_URL, // Remplacez par votre domaine front-end 
-    credentials: true, // Permet l'envoi des cookies à travers les domaines
-    methods: ["GET", "POST"], // Méthodes HTTP autorisées
-  },
-});
+const io = new Server(server);
 
 let notifications = [];
 
