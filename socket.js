@@ -10,19 +10,15 @@ const app = express();
 // Create a server
 const server = http.createServer(app);
 
-// Middleware pour loguer les en-têtes des requêtes
-app.use((req, res, next) => {
-  console.log('Request headers:', req.headers);
-  next();
-});
 
 // Set up Socket.IO with CORS configuration
 const io = new Server(server, {
   cors: {
-    origin: "https://cours.pingpro.fr", // Remplacez par votre domaine front-end 
+    origin: process.env.FRONEND_CORS_URL, // Remplacez par votre domaine front-end 
     credentials: true, // Permet l'envoi des cookies à travers les domaines
     methods: ["GET", "POST"], // Méthodes HTTP autorisées
   },
+  transports: ['websocket'] // Spécifiez les transports acceptés
 });
 
 let notifications = [];

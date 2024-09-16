@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');//on appele le module mongoose
-const bcrypt = require('bcrypt');
 const { isEmail } = require('validator');
 
 const userSchema = new mongoose.Schema(//on crée une bibliothéque mongoose dans laquelle on va déclarer le schèma utilisateur

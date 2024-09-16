@@ -14,7 +14,6 @@ const createToken = (id, role) => {
   })
 };
 
-
 module.exports.signIn = async (req, res) => {
   const { email, password } = req.body;
 
@@ -22,18 +21,14 @@ module.exports.signIn = async (req, res) => {
     // Check if the user exists
     const user = await UserModel.findOne({ email });
     if (!user) return res.status(400).json("L'utilisateur n'existe pas");
-
     // Check if the user is verified
     if (!user.isVerified) return res.status(403).json("Veuillez valider votre adresse email avant de vous connecter");
-
     // Compare the provided password with the hashed password in the database
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) return res.status(401).json("Mot de passe incorrect");
-
     // Create the token with the user's ID and role
     const token = createToken(user._id, user.role);
     
-    // Set the token as a cookie
     res.cookie('jwt', token, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // Token expires in 1 day (adjust as necessary)
@@ -41,13 +36,9 @@ module.exports.signIn = async (req, res) => {
       sameSite: 'None' // For cross-site cookie sharing
     });
 
-    // Prepare the response data
-    const responseData = {
-      userId: user._id,
-      role: user.role,
+    const responseData = { userId: user._id,  role: user.role,
     };
 
-    // Return success message with the user data
     res.status(200).json({ responseData });
   } catch (err) {
     res.status(500).json({ error: 'Erreur interne du serveur', details: err });
